@@ -1,0 +1,36 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.0/containers/java-8
+{
+	"name": "logback-layout",
+	"dockerComposeFile": "docker-compose.yml",
+    "workspaceFolder": "/app",
+    "service": "logback-layout",
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			// Set *default* container specific settings.json values on container create.
+			"settings": { 
+				"java.server.launchMode":"Standard",
+				"sonarlint.ls.javaHome":"/root/.sdkman/candidates/java/current",
+				"java.jdt.ls.java.home":"/root/.sdkman/candidates/java/current",
+				"java.import.gradle.java.home": "/root/.sdkman/candidates/java/11.0.23-librca",
+				"java.configuration.runtimes": [{
+					"default": true,
+					"name": "JavaSE-11",
+					"path": "/root/.sdkman/candidates/java/11.0.23-librca"
+				}]
+			},
+			
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"vmware.vscode-boot-dev-pack",
+				"GitHub.copilot",
+				"ms-vsliveshare.vsliveshare",
+				"vscjava.vscode-java-debug"
+			]
+		}
+	},
+	"overrideCommand": true
+}
