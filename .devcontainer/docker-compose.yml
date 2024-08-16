@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  logback-layout:
+  logback-encoder:
     build: .
     volumes:
       - ..:/app
