@@ -48,10 +48,11 @@ To use `CustomLogbackConfigurator` for removing logback configuration using `log
 </configuration>
 ```
 
-As far as passing `x_request_id` is concerned your application will have to pass the value using [Mapped Diagnostic Context(MDC)](https://logback.qos.ch/manual/mdc.html). Other contextual information to be logged in field `sdc` is also supposed to be provided via MDC.
+As far as passing `x_request_id` is concerned your application will have to pass the value using [Mapped Diagnostic Context(MDC)](https://logback.qos.ch/manual/mdc.html). Other contextual information to be logged in field `sdc` is to be provided as key/value pairs using `LoggingEventBuilder` as shown below. 
 
 ```
-MDC.put("x_request_id", "49a3d54a-7094-4e37-9ac8-2bad5623dcde")
+MDC.put("x_request_id", "49a3d54a-7094-4e37-9ac8-2bad5623dcde");
+logger.atError().addKeyValue("bookingId", "1234").addKeyValue("ticketId", "2346").setMessage("error in booking.").log();
 ```
 
 
