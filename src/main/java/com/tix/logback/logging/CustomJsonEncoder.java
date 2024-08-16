@@ -3,6 +3,7 @@ package com.tix.logback.logging;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -61,9 +62,15 @@ public class CustomJsonEncoder extends EncoderBase<ILoggingEvent> {
             this.source = source;
             this.thread = thread;
             this.message = message;
-            this.x_request_id = mdc.get("x_request_id");
-            mdc.remove("x_request_id");
-            this.sdc = mdc;
+            if (mdc != null && !mdc.isEmpty()) {
+                String requestId = mdc.get("x_request_id");
+                this.x_request_id = requestId != null ? requestId : "";
+                mdc.remove("x_request_id");
+                this.sdc = mdc;
+            } else {
+                this.x_request_id = "";
+                this.sdc = new HashMap<>();
+            }
         }
     }
 }
