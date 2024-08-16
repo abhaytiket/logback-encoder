@@ -1,14 +1,16 @@
 package com.tix.logback.logging;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
 import org.slf4j.MDC;
+import org.slf4j.event.KeyValuePair;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.encoder.EncoderBase;
@@ -30,10 +32,10 @@ public class CustomJsonEncoder extends EncoderBase<ILoggingEvent> {
                 event.getLoggerName(),
                 event.getThreadName(),
                 event.getFormattedMessage(),
-                MDC.getCopyOfContextMap()
+                event.getKeyValuePairs()
             );
             return (objectMapper.writeValueAsString(logEvent) + "\n").getBytes(StandardCharsets.UTF_8);
-        } catch (IOException e) {
+        } catch (JsonProcessingException e) {
             addError("Error encoding log event", e);
             return null;
         }
@@ -52,9 +54,9 @@ public class CustomJsonEncoder extends EncoderBase<ILoggingEvent> {
         public String thread;
         public String message;
         public String x_request_id;
-        public Map<String, String> sdc;
+        public Map<String, Object> sdc;
 
-        public LogEvent(long timestamp, String level, String source, String thread, String message, Map<String, String> mdc) {
+        public LogEvent(long timestamp, String level, String source, String thread, String message, List<KeyValuePair> keyValuePairs) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             this.timestamp = sdf.format(new java.util.Date(timestamp));
@@ -62,14 +64,22 @@ public class CustomJsonEncoder extends EncoderBase<ILoggingEvent> {
             this.source = source;
             this.thread = thread;
             this.message = message;
+            
+            if (keyValuePairs != null && !keyValuePairs.isEmpty()) {
+                this.sdc = new HashMap<>(keyValuePairs.size());
+                for (KeyValuePair kvp : keyValuePairs) {
+                    this.sdc.put(kvp.key, kvp.value);
+                }
+            } else {
+                this.sdc = new HashMap<>(1);
+            }
+            
+            Map<String, String> mdc = MDC.getCopyOfContextMap();
             if (mdc != null && !mdc.isEmpty()) {
                 String requestId = mdc.get("x_request_id");
                 this.x_request_id = requestId != null ? requestId : "";
-                mdc.remove("x_request_id");
-                this.sdc = mdc;
             } else {
                 this.x_request_id = "";
-                this.sdc = new HashMap<>();
             }
         }
     }
