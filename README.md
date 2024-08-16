@@ -27,13 +27,13 @@ For Maven projects add this dependency in `pom.xml` file of your project and add
 <dependencies>
   <dependency>
     <groupId>com.tix.logback.logging</groupId>
-    <artifactId>custom-config</artifactId>
+    <artifactId>custom-encoder</artifactId>
     <version></version>
   </dependency>
 </dependencies>
 ```
 
-To use `CustomLogbackConfigurator` for removing logback configuration using `logback.xml` we will be using [service provider](https://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html) loading facility provided by Java. All you have to do is to create a file named `ch.qos.logback.classic.spi.Configurator` on path `src/main/resources/META-INF/services` and add `com.tix.logback.logging.CustomLogbackConfigurator` as the content of the file. This is actually the recommended way to configure logback for your application but if you want to do it in your own way then simply add `logback.xml` file in path `src/main/resources` of your Maven project. To use `CustomJsonEncoder` defined in this project with `ConsoleAppender` you can add the following configuration in `logback.xml`:
+To use `CustomLogbackConfigurator` for removing logback configuration using `logback.xml` we will be using [service provider](https://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html) loading facility provided by Java. All you have to do is to create a file named `ch.qos.logback.classic.spi.Configurator` on path `src/main/resources/META-INF/services` and add `com.tix.logback.logging.CustomLogbackConfigurator` as the content of the file. This is actually the recommended way to configure logback for your application because it will reduce your application startup time by skipping XML parsing of `logback.xml` but, if you want to do it in your own way then simply add `logback.xml` file in path `src/main/resources` of your Maven project. To use `CustomJsonEncoder` defined in this project with `ConsoleAppender` you can add the following configuration in `logback.xml`:
 
 ```
 <configuration>
